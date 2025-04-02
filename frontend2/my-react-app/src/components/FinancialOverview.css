@@ -1,0 +1,38 @@
+.financial-overview {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.stat-card h3 {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: normal;
+}
+
+.amount {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+
+.change {
+  font-size: 0.9rem;
+}
+
+.change.positive {
+  color: #34a853;
+}
+
+.change.negative {
+  color: #ea4335;
+} 
