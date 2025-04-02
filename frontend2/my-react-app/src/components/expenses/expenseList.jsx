@@ -21,10 +21,10 @@
 // ------------------------------------------------------------------
 
 const dummyExpenses = [
-  { id: 1, name: "Groceries", amount: 220.50 },
-  { id: 2, name: "Rent", amount: 500.00 },
-  { id: 3, name: "Gym", amount: 42.90 },
-  { id: 4, name: "Spotify", amount: 9.99 },
+  { id: 1, name: "Groceries ", amount: 220.50 },
+  { id: 2, name: "Rent ", amount: 500.00 },
+  { id: 3, name: "Gym ", amount: 42.90 },
+  { id: 4, name: "Spotify ", amount: 9.99 },
 ];
 
 function ExpenseList() {

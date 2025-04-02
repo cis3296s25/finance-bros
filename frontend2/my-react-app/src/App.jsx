@@ -61,6 +61,55 @@
 // -----------------------------------------------------------------------------------
 
 
+// import ExpenseForm from "./components/expenses/expenseForm";
+// import ExpenseList from "./components/expenses/expenseList";
+// import HypotheticalCalculator from "./components/hypotheticalCalculator";
+// import SpendingSummary from "./components/spendingSummary";
+// import MonthlyComparison from "./components/monthlyComparison";
+
+// function App() {
+//   return (
+//     <div className="min-h-screen bg-gray-100 p-6">
+//       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8">
+//         <h1 className="text-3xl font-bold mb-4 text-center">💰 Expense Calculator Dashboard</h1>
+//         <p className="mb-6 text-center text-gray-600">
+//           This tool helps you understand your monthly spending, compare across time periods, and calculate your future affordability.
+//         </p>
+
+//         <SpendingSummary />
+
+//         <section className="my-10">
+//           <h2 className="text-2xl font-semibold mb-2">Add New Expense</h2>
+//           <ExpenseForm />
+//         </section>
+
+//         <section className="my-10">
+//           <ExpenseList />
+//         </section>
+
+//         <section className="my-10">
+//           <h2 className="text-2xl font-semibold mb-2">Hypothetical Expense Calculator</h2>
+//           <HypotheticalCalculator />
+//         </section>
+
+//         <section className="my-10">
+//           <h2 className="text-2xl font-semibold mb-2">Monthly Comparison</h2>
+//           <MonthlyComparison />
+//         </section>
+
+//         <p className="mt-10 text-center text-sm text-gray-500">
+//           Log in or create an account to save your data securely and track spending across devices.
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+// --------------------------------------------------------------------------------------------------
+
+import { useState } from "react";
 import ExpenseForm from "./components/expenses/expenseForm";
 import ExpenseList from "./components/expenses/expenseList";
 import HypotheticalCalculator from "./components/hypotheticalCalculator";
@@ -68,6 +117,12 @@ import SpendingSummary from "./components/spendingSummary";
 import MonthlyComparison from "./components/monthlyComparison";
 
 function App() {
+  const [expenses, setExpenses] = useState([]);
+
+  const addExpense = (expense) => {
+    setExpenses((prev) => [...prev, expense]);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8">
@@ -80,11 +135,11 @@ function App() {
 
         <section className="my-10">
           <h2 className="text-2xl font-semibold mb-2">Add New Expense</h2>
-          <ExpenseForm />
+          <ExpenseForm onAddExpense={addExpense} />
         </section>
 
         <section className="my-10">
-          <ExpenseList />
+          <ExpenseList expenses={expenses} />
         </section>
 
         <section className="my-10">
@@ -106,5 +161,6 @@ function App() {
 }
 
 export default App;
+
 
 
