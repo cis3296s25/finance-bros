@@ -5,6 +5,8 @@ import { Users, Transactions } from './models/financeModels.js';
 
 const app = express();
 
+app.use(express.json()); // Middleware to parse JSON request bodies
+
 app.get('/', (request, response) => {
   console.log(request);
   return response.status(234).send('welcome to the homepage');
@@ -17,6 +19,19 @@ app.post('/users', async (req, res) => {
     res.status(201).json(savedUser); // Respond with the saved user
   } catch (error) {
     res.status(400).json({ error: error.message }); // Handle errors
+  }
+});
+// Route to get all users
+app.get('/users', async (req, res) => {
+  try {
+    const users = await Users.find({}); // Fetch all users from the database
+    res.status(200).json({ // Respond with the list of users
+        count: users.length, // Count the number of users
+        data: users // Data to be sent in the response
+    });
+  } catch (error) {
+    console.log(error); // Log the error for debugging
+    res.status(500).send({ error: error.message }); // Handle errors
   }
 });
 
@@ -45,3 +60,8 @@ mongoose
         console.log('Error connecting to the database');
         console.error(error);
     });
+
+   
+
+
+    
