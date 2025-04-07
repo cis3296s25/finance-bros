@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
-import './AIInsights.css'
+import './All_insights.css'
 
-function AIInsights() {
+function All_insights() {
   const navigate = useNavigate()
   
   const insights = [
@@ -45,4 +45,4 @@ function AIInsights() {
   )
 }
 
-export default AIInsights 
+export default All_insights 

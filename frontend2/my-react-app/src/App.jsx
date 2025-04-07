@@ -1,8 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Dashboard from './components/Dashboard'
+import { Dashboard, All_insights, FinancialOverview, Goals } from './components/Dashboard';
 import Transactions from './components/Transactions'
-import Goals from './components/Goals'
 import Insights from './components/Insights'
 import SignIn from './components/SignIn'
 import './App.css'

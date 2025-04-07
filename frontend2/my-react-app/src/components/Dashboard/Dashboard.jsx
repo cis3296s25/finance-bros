@@ -1,9 +1,9 @@
-import { useState } from 'react'
-import './Dashboard.css'
-import FinancialOverview from './FinancialOverview'
-import IncomeExpensesChart from './IncomeExpensesChart'
-import RecentTransactions from './RecentTransactions'
-import AIInsights from './AIInsights'
+import { useState } from 'react';
+import './Dashboard.css';
+import FinancialOverview from './FinancialOverview';
+import IncomeExpensesChart from './IncomeExpensesChart';
+import RecentTransactions from './RecentTransactions';
+import All_insights from './All_insights';
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -77,7 +77,7 @@ function Dashboard() {
               <RecentTransactions />
             </div>
             <div className="sidebar">
-              <AIInsights />
+              <All_insights />
             </div>
           </div>
         </>
@@ -86,4 +86,4 @@ function Dashboard() {
   )
 }
 
-export default Dashboard 
+export default Dashboard
