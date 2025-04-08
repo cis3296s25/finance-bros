@@ -1,39 +1,47 @@
 // BudgetingTab.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
-
-const initialCategories = [
-  { id: 1, name: "Groceries", budget: 200, spent: 50 },
-  { id: 2, name: "Rent", budget: 800, spent: 800 },
-  { id: 3, name: "Entertainment", budget: 150, spent: 90 },
-];
 
 const COLORS = ["#4ade80", "#facc15", "#f87171"];
 
 export default function BudgetingTab() {
-  const [categories, setCategories] = useState(initialCategories);
+  const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const [budgetAmount, setBudgetAmount] = useState("");
 
-  const totalBudget = categories.reduce((sum, c) => sum + c.budget, 0);
-  const totalSpent = categories.reduce((sum, c) => sum + c.spent, 0);
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:5555/categories");
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    }
+  };
 
-  const addCategory = () => {
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const addCategory = async () => {
     if (!newCategory || !budgetAmount) return;
     const newCat = {
-      id: Date.now(),
       name: newCategory,
       budget: parseFloat(budgetAmount),
       spent: 0,
     };
-    setCategories([...categories, newCat]);
-    setNewCategory("");
-    setBudgetAmount("");
+    try {
+      const response = await axios.post("http://localhost:5555/categories", newCat);
+      setCategories([...categories, response.data]);
+      setNewCategory("");
+      setBudgetAmount("");
+    } catch (error) {
+      console.error("Failed to add category:", error);
+    }
   };
 
-  const deleteCategory = (id) => {
-    setCategories(categories.filter((cat) => cat.id !== id));
-  };
+  const totalBudget = categories.reduce((sum, c) => sum + c.budget, 0);
+  const totalSpent = categories.reduce((sum, c) => sum + c.spent, 0);
 
   return (
     <div className="p-6 space-y-6 bg-white rounded-2xl shadow-md">
@@ -79,14 +87,14 @@ export default function BudgetingTab() {
             placeholder="Category name"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            className="border border-gray-300 text-gray-950 rounded px-3 py-2 w-full sm:w-auto"
+            className="border border-gray-300 text-gray-900 rounded px-3 py-2 w-full sm:w-auto"
           />
           <input
             type="number"
             placeholder="Budget amount"
             value={budgetAmount}
             onChange={(e) => setBudgetAmount(e.target.value)}
-            className="border border-gray-300 text-gray-950 rounded px-3 py-2 w-full sm:w-auto"
+            className="border border-gray-300 text-gray-900 rounded px-3 py-2 w-full sm:w-auto"
           />
           <button
             onClick={addCategory}
@@ -97,27 +105,23 @@ export default function BudgetingTab() {
         </div>
       </div>
 
-      <div className="space-y-4">
+     <div className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">Your Categories</h2>
-        {categories.map((cat) => (
-          <div
-            key={cat.id}
-            className="bg-gray-50 border border-gray-300 rounded p-4 flex justify-between items-center"
-          >
-            <div>
+        {categories.length === 0 ? (
+          <p className="text-gray-500">No categories yet. Add one above!</p>
+        ) : (
+          categories.map((cat) => (
+            <div
+              key={cat._id}
+              className="bg-gray-50 border border-gray-300 rounded p-4 flex justify-between items-center"
+            >
               <span className="font-medium text-lg text-gray-700">{cat.name}</span>
-              <span className="text-sm text-gray-600 ml-2">
+              <span className="text-sm text-gray-600">
                 ${cat.spent} / ${cat.budget}
               </span>
             </div>
-            <button
-              onClick={() => deleteCategory(cat.id)}
-              className="text-red-600 hover:text-red-800 font-medium"
-            >
-              Delete
-            </button>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
