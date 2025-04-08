@@ -8,16 +8,8 @@ import BudgetingTab from './BudgetingTab'; // Import the BudgetingTab component
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
 
-  const handleAddAccount = () => {
-    console.log('Opening add account flow...');
-  };
-
-  const handleSetGoal = () => {
-    console.log('Opening goal setting...');
-  };
-
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Header Section */}
       <div className="flex justify-between items-center p-6 bg-white shadow">
         <div>
@@ -27,13 +19,13 @@ function Dashboard() {
         <div className="flex space-x-4">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            onClick={handleAddAccount}
+            onClick={() => console.log('Add Account')}
           >
             Add Account
           </button>
           <button
             className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            onClick={handleSetGoal}
+            onClick={() => console.log('Set Goal')}
           >
             Set Goal
           </button>
@@ -69,7 +61,7 @@ function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-grow p-6 h-[500px]">
+      <div className="flex-grow p-6">
         {activeTab === 'overview' && (
           <div className="grid grid-cols-3 gap-6">
             <div className="col-span-2">
@@ -82,7 +74,7 @@ function Dashboard() {
           </div>
         )}
         {activeTab === 'budgets' && (
-          <div className="h-full">
+          <div>
             <BudgetingTab />
           </div>
         )}

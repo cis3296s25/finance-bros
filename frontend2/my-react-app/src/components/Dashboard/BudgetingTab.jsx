@@ -31,6 +31,10 @@ export default function BudgetingTab() {
     setBudgetAmount("");
   };
 
+  const deleteCategory = (id) => {
+    setCategories(categories.filter((cat) => cat.id !== id));
+  };
+
   return (
     <div className="p-6 space-y-6 bg-white rounded-2xl shadow-md">
       <h1 className="text-3xl font-bold text-gray-900">Budget Overview</h1>
@@ -75,14 +79,14 @@ export default function BudgetingTab() {
             placeholder="Category name"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 w-full sm:w-auto"
+            className="border border-gray-300 text-gray-950 rounded px-3 py-2 w-full sm:w-auto"
           />
           <input
             type="number"
             placeholder="Budget amount"
             value={budgetAmount}
             onChange={(e) => setBudgetAmount(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 w-full sm:w-auto"
+            className="border border-gray-300 text-gray-950 rounded px-3 py-2 w-full sm:w-auto"
           />
           <button
             onClick={addCategory}
@@ -100,10 +104,18 @@ export default function BudgetingTab() {
             key={cat.id}
             className="bg-gray-50 border border-gray-300 rounded p-4 flex justify-between items-center"
           >
-            <span className="font-medium text-lg text-gray-700">{cat.name}</span>
-            <span className="text-sm text-gray-600">
-              ${cat.spent} / ${cat.budget}
-            </span>
+            <div>
+              <span className="font-medium text-lg text-gray-700">{cat.name}</span>
+              <span className="text-sm text-gray-600 ml-2">
+                ${cat.spent} / ${cat.budget}
+              </span>
+            </div>
+            <button
+              onClick={() => deleteCategory(cat.id)}
+              className="text-red-600 hover:text-red-800 font-medium"
+            >
+              Delete
+            </button>
           </div>
         ))}
       </div>
