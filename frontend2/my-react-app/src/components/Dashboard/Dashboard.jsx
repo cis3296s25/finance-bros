@@ -3,6 +3,7 @@ import FinancialOverview from './FinancialOverview';
 import IncomeExpensesChart from './IncomeExpensesChart';
 import RecentTransactions from './RecentTransactions';
 import All_insights from './All_insights';
+import BudgetingTab from './BudgetingTab'; // Import the BudgetingTab component
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -16,8 +17,9 @@ function Dashboard() {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
+    <div className="flex flex-col h-screen bg-gray-100">
+      {/* Header Section */}
+      <div className="flex justify-between items-center p-6 bg-white shadow">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Financial Dashboard</h2>
           <p className="text-gray-600">Your financial overview and insights</p>
@@ -38,7 +40,8 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="flex space-x-4 mb-6">
+      {/* Navigation Tabs */}
+      <div className="flex space-x-4 p-4 bg-gray-200">
         <a
           href="#"
           className={`px-4 py-2 rounded ${
@@ -51,20 +54,6 @@ function Dashboard() {
         >
           Overview
         </a>
-        {/*
-        <a
-          href="#"
-          className={`px-4 py-2 rounded ${
-            activeTab === 'accounts' ? 'bg-blue-950 text-black' : 'text-gray-600'
-          }`}
-          onClick={(e) => {
-            e.preventDefault();
-            setActiveTab('accounts');
-          }}
-        >
-          Accounts
-        </a>
-        */}
         <a
           href="#"
           className={`px-4 py-2 rounded ${
@@ -79,9 +68,9 @@ function Dashboard() {
         </a>
       </div>
 
-      {activeTab === 'overview' && (
-        <>
-          <FinancialOverview />
+      {/* Main Content */}
+      <div className="flex-grow p-6 h-[500px]">
+        {activeTab === 'overview' && (
           <div className="grid grid-cols-3 gap-6">
             <div className="col-span-2">
               <IncomeExpensesChart />
@@ -91,8 +80,13 @@ function Dashboard() {
               <All_insights />
             </div>
           </div>
-        </>
-      )}
+        )}
+        {activeTab === 'budgets' && (
+          <div className="h-full">
+            <BudgetingTab />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

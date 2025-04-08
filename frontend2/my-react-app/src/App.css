@@ -63,3 +63,12 @@ body {
   margin: 0 auto;
   padding: 2rem;
 }
+
+/* Hide scrollbars globally */
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none; /* For Firefox */
+}
