@@ -1,0 +1,6 @@
+.welcome-text {
+  color: #ffffff; /* Change this to your desired color */
+  font-size: 2rem; /* Optional: Adjust font size */
+  font-weight: bold; /* Optional: Make the text bold */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Optional: Add a shadow for better visibility */
+}

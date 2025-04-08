@@ -3,7 +3,7 @@ import Navbar from './components/Navbar'
 import { Dashboard, All_insights, FinancialOverview, Goals } from './components/Dashboard';
 import Transactions from './components/Transactions'
 import Insights from './components/Insights'
-import SignIn from './components/SignIn'
+import Auth from './components/Auth';
 import './App.css'
 
 function App() {
@@ -14,10 +14,10 @@ function App() {
         <div className="content">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/goals" element={<Goals />} />
             <Route path="/insights" element={<Insights />} />
-            <Route path="/signin" element={<SignIn />} />
           </Routes>
         </div>
       </div>

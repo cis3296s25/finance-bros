@@ -33,7 +33,7 @@ function Navbar() {
         <button className="connect-btn" onClick={handleConnectAccount}>
           Connect Account
         </button>
-        <button className="sign-in-btn" onClick={() => navigate('/signin')}>
+        <button className="sign-in-btn" onClick={() => navigate('/auth')}>
           Sign In
         </button>
       </div>
