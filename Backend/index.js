@@ -1,7 +1,7 @@
 import express from 'express';
 import { PORT, mongoDBURL } from './config.js';
 import mongoose from 'mongoose';
-import { Users, Transactions } from './models/financeModels.js';
+import { Users, Transactions, Category } from './models/financeModels.js';
 
 const app = express();
 
@@ -46,22 +46,51 @@ app.post('/transactions', async (req, res) => {
   }
 });
 
+// Route to get all categories
+app.get('/categories', async (req, res) => {
+  try {
+    const categories = await Category.find({});
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
+// Route to add a new category
+app.post('/categories', async (req, res) => {
+  try {
+    const category = new Category(req.body);
+    const savedCategory = await category.save();
+    res.status(201).json(savedCategory);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Route to delete a category by ID
+app.delete('/categories/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Category.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Category deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 mongoose
-    .connect(mongoDBURL)
-    .then(() => {
-        console.log('Connected to the database');
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    })
-    .catch((error) => {
-        console.log('Error connecting to the database');
-        console.error(error);
+  .connect(mongoDBURL)
+  .then(() => {
+    console.log('Connected to the database');
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
     });
+  })
+  .catch((error) => {
+    console.log('Error connecting to the database');
+    console.error(error);
+  });
 
-   
 
 
-    
+

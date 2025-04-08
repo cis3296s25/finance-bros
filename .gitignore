@@ -1,0 +1,5 @@
+Backend/.env
+frontend2/my-react-app/src/.env
+
+*.local
+

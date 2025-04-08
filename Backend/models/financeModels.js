@@ -20,9 +20,9 @@ const transactionSchema = new mongoose.Schema({
 
 // Category Schema
 const categorySchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true },
   name: { type: String, required: true },
-  type: { type: String, enum: ['Income', 'Expense'], required: true },
+  budget: { type: Number, required: true },
+  spent: { type: Number, default: 0 },
 });
 
 // Budget Schema
@@ -73,10 +73,11 @@ const financialGoalSchema = new mongoose.Schema({
 // Export Models
 export const Users = mongoose.model('Users', userSchema);
 export const Transactions = mongoose.model('Transactions', transactionSchema);
-export const Categories = mongoose.model('Categories', categorySchema);
+export const Category = mongoose.model('Categories', categorySchema);
 export const Budgets = mongoose.model('Budgets', budgetSchema);
 export const Savings = mongoose.model('Savings', savingSchema);
 export const Debts = mongoose.model('Debts', debtSchema);
 export const Subscriptions = mongoose.model('Subscriptions', subscriptionSchema);
 export const FinancialGoals = mongoose.model('FinancialGoals', financialGoalSchema);
+
 
