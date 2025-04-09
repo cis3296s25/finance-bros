@@ -2,6 +2,7 @@ import express from 'express';
 import { PORT, mongoDBURL } from './config.js';
 import mongoose from 'mongoose';
 import { Users, Transactions, Category } from './models/financeModels.js';
+import Goal from './models/Goal.js';
 
 const app = express();
 
@@ -73,6 +74,67 @@ app.delete('/categories/:id', async (req, res) => {
     const { id } = req.params;
     await Category.findByIdAndDelete(id);
     res.status(200).json({ message: 'Category deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Goals Routes
+// Get all goals for a user
+app.get('/api/goals', async (req, res) => {
+  try {
+    const userId = req.headers['user-id']; // Get user ID from request headers
+    const goals = await Goal.find({ userId }).sort({ createdAt: -1 });
+    res.status(200).json(goals);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Create a new goal
+app.post('/api/goals', async (req, res) => {
+  try {
+    const userId = req.headers['user-id']; // Get user ID from request headers
+    const goal = new Goal({
+      ...req.body,
+      userId
+    });
+    const savedGoal = await goal.save();
+    res.status(201).json(savedGoal);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Update a goal
+app.put('/api/goals/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.headers['user-id'];
+    const updatedGoal = await Goal.findOneAndUpdate(
+      { _id: id, userId },
+      req.body,
+      { new: true }
+    );
+    if (!updatedGoal) {
+      return res.status(404).json({ error: 'Goal not found' });
+    }
+    res.status(200).json(updatedGoal);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete a goal
+app.delete('/api/goals/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.headers['user-id'];
+    const deletedGoal = await Goal.findOneAndDelete({ _id: id, userId });
+    if (!deletedGoal) {
+      return res.status(404).json({ error: 'Goal not found' });
+    }
+    res.status(200).json({ message: 'Goal deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
