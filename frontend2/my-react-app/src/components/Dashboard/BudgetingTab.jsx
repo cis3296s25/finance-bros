@@ -4,7 +4,6 @@ import axios from "axios";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
 const COLORS = ["#4ade80", "#facc15", "#f87171"];
-
 export default function BudgetingTab() {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
@@ -45,17 +44,22 @@ export default function BudgetingTab() {
 
   return (
     <div className="p-6 space-y-6 bg-white rounded-2xl shadow-md">
+      {/* Replaced "max-w-screen-lg mx-auto" with "container mx-auto" */}
       <h1 className="text-3xl font-bold text-gray-900">Budget Overview</h1>
 
-      <div className="bg-gray-100 border border-gray-300 rounded-lg p-6 flex flex-col md:flex-row justify-between items-center">
-        <div className="text-gray-700 space-y-1">
+      <div className="bg-gray-100 border border-gray-300 rounded-lg p-6 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="text-gray-700 space-y-2">
           <p className="text-lg font-medium">Total Budget: ${totalBudget}</p>
           <p className="text-lg font-medium">Total Spent: ${totalSpent}</p>
-          <p className="text-lg font-semibold text-green-600">
+          <p
+            className={`text-lg font-semibold ${
+              totalBudget - totalSpent >= 0 ? "text-green-600" : "text-red-600"
+            }`}
+          >
             Remaining: ${totalBudget - totalSpent}
           </p>
         </div>
-        <div className="mt-6 md:mt-0">
+        <div className="w-full md:w-auto">
           <PieChart width={200} height={200}>
             <Pie
               data={categories}
@@ -79,33 +83,33 @@ export default function BudgetingTab() {
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">Add New Category</h2>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-4">
           <input
             type="text"
             placeholder="Category name"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            className="border border-gray-300 text-gray-900 rounded px-3 py-2 w-full sm:w-auto"
+            className="border border-gray-300 text-gray-900 rounded-lg px-4 py-2 w-full sm:w-auto focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
           <input
             type="number"
             placeholder="Budget amount"
             value={budgetAmount}
             onChange={(e) => setBudgetAmount(e.target.value)}
-            className="border border-gray-300 text-gray-900 rounded px-3 py-2 w-full sm:w-auto"
+            className="border border-gray-300 text-gray-900 rounded-lg px-4 py-2 w-full sm:w-auto focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
           <button
             onClick={addCategory}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition duration-200"
           >
             Add
           </button>
         </div>
       </div>
 
-     <div className="space-y-4">
+      <div className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">Your Categories</h2>
         {categories.length === 0 ? (
           <p className="text-gray-500">No categories yet. Add one above!</p>
@@ -113,12 +117,20 @@ export default function BudgetingTab() {
           categories.map((cat) => (
             <div
               key={cat._id}
-              className="bg-gray-50 border border-gray-300 rounded p-4 flex justify-between items-center"
+              className="bg-gray-50 border border-gray-300 rounded-lg p-4 flex justify-between items-center shadow-sm"
             >
-              <span className="font-medium text-lg text-gray-700">{cat.name}</span>
-              <span className="text-sm text-gray-600">
-                ${cat.spent} / ${cat.budget}
-              </span>
+              <div>
+                <span className="font-medium text-lg text-gray-700">{cat.name}</span>
+                <span className="text-sm text-gray-600 block">
+                  ${cat.spent} / ${cat.budget}
+                </span>
+              </div>
+              <button
+                className="text-red-500 hover:text-red-700 font-medium transition duration-200"
+                onClick={() => console.log(`Delete ${cat.name}`)}
+              >
+                Delete
+              </button>
             </div>
           ))
         )}
@@ -126,4 +138,3 @@ export default function BudgetingTab() {
     </div>
   );
 }
- 

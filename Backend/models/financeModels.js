@@ -9,7 +9,6 @@ const categorySchema = new mongoose.Schema({
   spent: { type: Number, default: 0 },
 });
 
-
 // Export Models
 export const Category = mongoose.model('Categories', categorySchema);
 

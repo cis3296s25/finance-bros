@@ -86,4 +86,5 @@ goalSchema.pre('save', function(next) {
   next();
 });
 
+
 module.exports = mongoose.model('Goal', goalSchema); 
