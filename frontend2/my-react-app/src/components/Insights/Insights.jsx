@@ -4,7 +4,7 @@ import { Bar, Pie, Line } from 'recharts';
 import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 function Insights() {
-  const [transactions, setTransactions] = useState([]);
+  const [Transactions, setTransactions] = useState([]);
   const [timeRange, setTimeRange] = useState('month');
   const [loading, setLoading] = useState(true);
   const [insights, setInsights] = useState({
@@ -23,7 +23,7 @@ function Insights() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/transactions');
+      const response = await axios.get('http://localhost:5555');
       setTransactions(response.data);
       calculateInsights(response.data);
       setLoading(false);

@@ -1,8 +1,7 @@
 import express from 'express';
 import { PORT, mongoDBURL } from './config.js';
 import mongoose from 'mongoose';
-import { Users, Transactions, Category } from './models/financeModels.js';
-import Goal from './models/Goal.js';
+import budgetingRoutes from './routes/Budgeting.js'; // Import Budgeting routes
 
 const app = express();
 
@@ -13,132 +12,15 @@ app.get('/', (request, response) => {
   return response.status(234).send('welcome to the homepage');
 });
 
-app.post('/users', async (req, res) => {
-  try {
-    const user = new Users(req.body); // Create a new user from the request body
-    const savedUser = await user.save(); // Save the user to the database
-    res.status(201).json(savedUser); // Respond with the saved user
-  } catch (error) {
-    res.status(400).json({ error: error.message }); // Handle errors
-  }
-});
-// Route to get all users
-app.get('/users', async (req, res) => {
-  try {
-    const users = await Users.find({}); // Fetch all users from the database
-    res.status(200).json({ // Respond with the list of users
-        count: users.length, // Count the number of users
-        data: users // Data to be sent in the response
-    });
-  } catch (error) {
-    console.log(error); // Log the error for debugging
-    res.status(500).send({ error: error.message }); // Handle errors
-  }
-});
 
-// Route to save a new transaction
-app.post('/transactions', async (req, res) => {
-  try {
-    const transaction = new Transactions(req.body); // Create a new transaction from the request body
-    const savedTransaction = await transaction.save(); // Save the transaction to the database
-    res.status(201).json(savedTransaction); // Respond with the saved transaction
-  } catch (error) {
-    res.status(400).json({ error: error.message }); // Handle errors
-  }
-});
 
-// Route to get all categories
-app.get('/categories', async (req, res) => {
-  try {
-    const categories = await Category.find({});
-    res.status(200).json(categories);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+// Budgeting Routes
+app.use('/budgeting', budgetingRoutes); // Connect Budgeting routes
 
-// Route to add a new category
-app.post('/categories', async (req, res) => {
-  try {
-    const category = new Category(req.body);
-    const savedCategory = await category.save();
-    res.status(201).json(savedCategory);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
 
-// Route to delete a category by ID
-app.delete('/categories/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Category.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Category deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
-// Goals Routes
-// Get all goals for a user
-app.get('/api/goals', async (req, res) => {
-  try {
-    const userId = req.headers['user-id']; // Get user ID from request headers
-    const goals = await Goal.find({ userId }).sort({ createdAt: -1 });
-    res.status(200).json(goals);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
-// Create a new goal
-app.post('/api/goals', async (req, res) => {
-  try {
-    const userId = req.headers['user-id']; // Get user ID from request headers
-    const goal = new Goal({
-      ...req.body,
-      userId
-    });
-    const savedGoal = await goal.save();
-    res.status(201).json(savedGoal);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
 
-// Update a goal
-app.put('/api/goals/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const userId = req.headers['user-id'];
-    const updatedGoal = await Goal.findOneAndUpdate(
-      { _id: id, userId },
-      req.body,
-      { new: true }
-    );
-    if (!updatedGoal) {
-      return res.status(404).json({ error: 'Goal not found' });
-    }
-    res.status(200).json(updatedGoal);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-// Delete a goal
-app.delete('/api/goals/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const userId = req.headers['user-id'];
-    const deletedGoal = await Goal.findOneAndDelete({ _id: id, userId });
-    if (!deletedGoal) {
-      return res.status(404).json({ error: 'Goal not found' });
-    }
-    res.status(200).json({ message: 'Goal deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 mongoose
   .connect(mongoDBURL)

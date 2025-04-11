@@ -6,7 +6,7 @@ import All_insights from './All_insights';
 import BudgetingTab from './BudgetingTab';
 
 function Dashboard() {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab] = useState('overview');
 
   return (
     <div className="min-h-screen w-full bg-gray-100">

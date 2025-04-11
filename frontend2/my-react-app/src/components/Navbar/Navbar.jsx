@@ -1,12 +1,12 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useUser, useClerk } from '@clerk/clerk-react'; // Import Clerk's useUser hook
 
 function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isSignedIn, user } = useUser(); // Get authentication state and user info
+  const { signOut } = useClerk(); // Get the signOut function from Clerk
 
-  const handleConnectAccount = () => {
-    console.log('Opening Plaid connection...');
-  };
 
   return (
     <nav className="bg-blue-900 text-white shadow-md">
@@ -62,18 +62,26 @@ function Navbar() {
 
         {/* Right Section */}
         <div className="flex items-center space-x-4">
-          <button
-            className="bg-blue-700 hover:bg-blue-800 text-white font-medium px-4 py-2 rounded-md transition"
-            onClick={handleConnectAccount}
-          >
-            Connect Account
-          </button>
-          <button
-            className="bg-gray-100 hover:bg-gray-200 text-blue-900 font-medium px-4 py-2 rounded-md transition"
-            onClick={() => navigate('/auth')}
-          >
-            Sign In
-          </button>
+          {isSignedIn ? (
+            <div className="flex items-center space-x-2">
+              <span className="text-green-500 font-medium">
+                Welcome, {user.firstName || user.emailAddresses[0].emailAddress}!
+              </span> {/* Show user's first name or email if authenticated */}
+              <button
+                className="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-md transition"
+                onClick={() => signOut()} // Call the signOut function
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <button
+              className="bg-gray-100 hover:bg-gray-200 text-blue-900 font-medium px-4 py-2 rounded-md transition"
+              onClick={() => navigate('/auth')} // Redirect to sign-in page
+            >
+              Sign In
+            </button>
+          )}
         </div>
       </div>
     </nav>
