@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
-import './Transactions.css'
 
 function Transactions() {
   const [transactions, setTransactions] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [newTransaction, setNewTransaction] = useState({
     amount: '',
@@ -19,16 +14,14 @@ function Transactions() {
     category: '',
     date: format(new Date(), 'yyyy-MM-dd'),
     description: '',
-    tags: [],
-    notes: '',
   });
 
+  // Fetch transactions on component mount
   useEffect(() => {
     fetchTransactions();
-    fetchCategories();
-    fetchTags();
   }, []);
 
+  // Fetch all transactions from the backend
   const fetchTransactions = async () => {
     try {
       const response = await axios.get('http://localhost:5555/transactions');
@@ -40,24 +33,7 @@ function Transactions() {
     }
   };
 
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get('http://localhost:5555/categories');
-      setCategories(response.data);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
-
-  const fetchTags = async () => {
-    try {
-      const response = await axios.get('http://localhost:5555/tags');
-      setTags(response.data);
-    } catch (error) {
-      console.error('Error fetching tags:', error);
-    }
-  };
-
+  // Handle input changes in the form
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewTransaction((prev) => ({
@@ -66,16 +42,19 @@ function Transactions() {
     }));
   };
 
+  // Handle form submission for adding or editing a transaction
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editingTransaction) {
+        // Update an existing transaction
         await axios.put(
           `http://localhost:5555/transactions/${editingTransaction._id}`,
           newTransaction
         );
         setEditingTransaction(null);
       } else {
+        // Add a new transaction
         await axios.post('http://localhost:5555/transactions', newTransaction);
       }
       setNewTransaction({
@@ -84,16 +63,15 @@ function Transactions() {
         category: '',
         date: format(new Date(), 'yyyy-MM-dd'),
         description: '',
-        tags: [],
-        notes: '',
       });
       setShowForm(false);
-      fetchTransactions();
+      fetchTransactions(); // Refresh the transactions list
     } catch (error) {
       console.error('Error saving transaction:', error);
     }
   };
 
+  // Handle editing a transaction
   const handleEdit = (transaction) => {
     setEditingTransaction(transaction);
     setNewTransaction({
@@ -103,17 +81,19 @@ function Transactions() {
     setShowForm(true);
   };
 
+  // Handle deleting a transaction
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
       try {
         await axios.delete(`http://localhost:5555/transactions/${id}`);
-        fetchTransactions();
+        fetchTransactions(); // Refresh the transactions list
       } catch (error) {
         console.error('Error deleting transaction:', error);
       }
     }
   };
 
+  // Format currency for display
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -121,6 +101,7 @@ function Transactions() {
     }).format(amount);
   };
 
+  // Filter transactions based on the search term
   const filteredTransactions = transactions.filter((transaction) => {
     const matchesSearch = searchTerm
       ? transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -129,6 +110,7 @@ function Transactions() {
     return matchesSearch;
   });
 
+  // Show a loading spinner while fetching data
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -156,7 +138,7 @@ function Transactions() {
           placeholder="Search transactions..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full p-2 border rounded-md"
+          className="w-full p-2 border rounded-md text-gray-900"
         />
       </div>
 
