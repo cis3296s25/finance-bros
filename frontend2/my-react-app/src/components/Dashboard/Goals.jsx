@@ -285,6 +285,8 @@ function Goals() {
         </div>
       )}
 
+      <h1 className="text-4xl font-bold text-gray-800 mb-8">Financial Goals</h1>
+
       <div className="flex gap-4 mb-8">
         <select
           value={filter}
@@ -386,6 +388,16 @@ function Goals() {
         ))}
       </div>
       
+      {/* Add Goal Button */}
+      <button
+        onClick={() => setIsFormVisible(true)}
+        className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition-colors duration-200"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+      </button>
+
       {showProgressChart && selectedGoal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
