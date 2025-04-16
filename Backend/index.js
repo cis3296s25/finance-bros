@@ -2,14 +2,20 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { PORT, mongoDBURL } from './config.js';
 import budgetingRoutes from './routes/Budgeting.js'; // Import Budgeting routes
-import transactionRoutes from './routes/transactions.js';
+import transactionRoutes from './routes/Transaction.js';
+import goalRoutes from './routes/Goal.js';
 import cors from 'cors';
 
+const app = express();
 
-const app = express(); // Initialize the app
+// Enable CORS for all routes
+app.use(cors({
+  origin: 'http://localhost:5173', // Allow requests from your frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-// Middleware
-app.use(express.json()); // Parse JSON request bodies
+app.use(express.json()); // Middleware to parse JSON request bodies
 
 app.use(cors()); // Enable CORS for all routes
 // Default Route
@@ -23,7 +29,9 @@ app.use('/budgeting', budgetingRoutes); // Connect Budgeting routes
 // Transaction Routes
 app.use('/transactions', transactionRoutes);
 
-// Database Connection and Server Startup
+// Goal Routes
+app.use('/goals', goalRoutes);
+
 mongoose
   .connect(mongoDBURL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

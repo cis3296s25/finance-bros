@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+const API_URL = 'http://localhost:5555';
+
 function Goals() {
   const [goals, setGoals] = useState([]);
   const [newGoal, setNewGoal] = useState({
@@ -12,6 +14,7 @@ function Goals() {
     description: '',
     category: 'Other',
     status: 'In Progress',
+    userId: '1',
     notifications: {
       enabled: true,
       frequency: 'Weekly'
@@ -31,7 +34,7 @@ function Goals() {
 
   const fetchGoals = async () => {
     try {
-      const response = await axios.get('http://localhost:5555/api/goals');
+      const response = await axios.get(`${API_URL}/goals`);
       setGoals(response.data);
     } catch (error) {
       console.error('Error fetching goals:', error);
@@ -60,7 +63,11 @@ function Goals() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/api/goals', newGoal);
+      const goalData = {
+        ...newGoal,
+        userId: '1'
+      };
+      await axios.post(`${API_URL}/goals`, goalData);
       setNewGoal({
         title: '',
         targetAmount: '',
@@ -69,6 +76,7 @@ function Goals() {
         description: '',
         category: 'Other',
         status: 'In Progress',
+        userId: '1',
         notifications: {
           enabled: true,
           frequency: 'Weekly'
@@ -83,7 +91,7 @@ function Goals() {
 
   const handleUpdateGoal = async (goalId, updates) => {
     try {
-      await axios.put(`http://localhost:3000/api/goals/${goalId}`, updates);
+      await axios.put(`${API_URL}/goals/${goalId}`, updates);
       fetchGoals();
     } catch (error) {
       console.error('Error updating goal:', error);
@@ -93,7 +101,7 @@ function Goals() {
   const handleDeleteGoal = async (goalId) => {
     if (window.confirm('Are you sure you want to delete this goal?')) {
       try {
-        await axios.delete(`http://localhost:3000/api/goals/${goalId}`);
+        await axios.delete(`${API_URL}/goals/${goalId}`);
         fetchGoals();
       } catch (error) {
         console.error('Error deleting goal:', error);
@@ -153,21 +161,137 @@ function Goals() {
 
   return (
     <div className="page-container p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Financial Goals</h2>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold text-gray-800">Financial Goals</h1>
         <button
           onClick={() => setIsFormVisible(!isFormVisible)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
         >
-          {isFormVisible ? 'Cancel' : 'Create New Goal'}
+          {isFormVisible ? 'Cancel' : 'Add Goal'}
         </button>
       </div>
+      
+      {isFormVisible && (
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Goal Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={newGoal.title}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                <select
+                  name="category"
+                  value={newGoal.category}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="Savings">Savings</option>
+                  <option value="Investment">Investment</option>
+                  <option value="Debt Repayment">Debt Repayment</option>
+                  <option value="Education">Education</option>
+                  <option value="Retirement">Retirement</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
 
-      <div className="flex gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Target Amount ($)</label>
+                <input
+                  type="number"
+                  name="targetAmount"
+                  value={newGoal.targetAmount}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Current Amount ($)</label>
+                <input
+                  type="number"
+                  name="currentAmount"
+                  value={newGoal.currentAmount}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Target Date</label>
+                <input
+                  type="date"
+                  name="deadline"
+                  value={newGoal.deadline}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Notification Frequency</label>
+                <select
+                  name="notifications.frequency"
+                  value={newGoal.notifications.frequency}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="Daily">Daily</option>
+                  <option value="Weekly">Weekly</option>
+                  <option value="Monthly">Monthly</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea
+                name="description"
+                value={newGoal.description}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows="3"
+              />
+            </div>
+
+            <div className="flex justify-end gap-4">
+              <button
+                type="button"
+                onClick={() => setIsFormVisible(false)}
+                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                Add Goal
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <h1 className="text-4xl font-bold text-gray-800 mb-8">Financial Goals</h1>
+
+      <div className="flex gap-4 mb-8">
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="p-2 border rounded-md text-gray-800"
+          className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
         >
           <option value="All">All Categories</option>
           <option value="Savings">Savings</option>
@@ -177,10 +301,11 @@ function Goals() {
           <option value="Retirement">Retirement</option>
           <option value="Other">Other</option>
         </select>
+
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="p-2 border rounded-md text-gray-800"
+          className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
         >
           <option value="deadline">Sort by Deadline</option>
           <option value="progress">Sort by Progress</option>
@@ -188,169 +313,90 @@ function Goals() {
         </select>
       </div>
 
-      {isFormVisible && (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-800 mb-1">Goal Title</label>
-              <input
-                type="text"
-                name="title"
-                value={newGoal.title}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md text-gray-800"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-800 mb-1">Category</label>
-              <select
-                name="category"
-                value={newGoal.category}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md text-gray-800"
-              >
-                <option value="Savings">Savings</option>
-                <option value="Investment">Investment</option>
-                <option value="Debt Repayment">Debt Repayment</option>
-                <option value="Education">Education</option>
-                <option value="Retirement">Retirement</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-800 mb-1">Target Amount ($)</label>
-              <input
-                type="number"
-                name="targetAmount"
-                value={newGoal.targetAmount}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md text-gray-800"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-800 mb-1">Current Amount ($)</label>
-              <input
-                type="number"
-                name="currentAmount"
-                value={newGoal.currentAmount}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md text-gray-800"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-800 mb-1">Target Date</label>
-              <input
-                type="date"
-                name="deadline"
-                value={newGoal.deadline}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md text-gray-800"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-800 mb-1">Notification Frequency</label>
-              <select
-                name="notifications.frequency"
-                value={newGoal.notifications.frequency}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md text-gray-800"
-              >
-                <option value="Daily">Daily</option>
-                <option value="Weekly">Weekly</option>
-                <option value="Monthly">Monthly</option>
-              </select>
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-800 mb-1">Description</label>
-              <textarea
-                name="description"
-                value={newGoal.description}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md text-gray-800"
-                rows="3"
-              />
-            </div>
-          </div>
-          <button
-            type="submit"
-            className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Save Goal
-          </button>
-        </form>
-      )}
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredAndSortedGoals.map((goal) => (
-          <div key={goal._id} className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="text-xl font-semibold text-gray-800">{goal.title}</h3>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(goal.category)}`}>
+        {goals.map((goal) => (
+          <div key={goal._id} className="bg-white rounded-xl shadow-lg p-6 transform transition-all duration-200 hover:scale-105">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-2xl font-semibold text-gray-800">{goal.title}</h3>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                goal.category === 'Investment' ? 'bg-green-100 text-green-800' :
+                goal.category === 'Savings' ? 'bg-blue-100 text-blue-800' :
+                goal.category === 'Debt Repayment' ? 'bg-red-100 text-red-800' :
+                goal.category === 'Education' ? 'bg-purple-100 text-purple-800' :
+                goal.category === 'Retirement' ? 'bg-orange-100 text-orange-800' :
+                'bg-gray-100 text-gray-800'
+              }`}>
                 {goal.category}
               </span>
             </div>
-            <div className="space-y-2">
-              <p className="text-gray-800">{goal.description}</p>
+            
+            <p className="text-gray-600 mb-4">{goal.description}</p>
+            
+            <div className="mb-4">
+              <div className="flex justify-between text-sm text-gray-600 mb-1">
+                <span>Progress</span>
+                <span>{Math.round((goal.currentAmount / goal.targetAmount) * 100)}%</span>
+              </div>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div
-                  className={`h-2.5 rounded-full ${getStatusColor(goal.status)}`}
-                  style={{ width: `${calculateProgress(goal.currentAmount, goal.targetAmount)}%` }}
-                />
+                  className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+                  style={{ width: `${(goal.currentAmount / goal.targetAmount) * 100}%` }}
+                ></div>
               </div>
-              <div className="flex justify-between text-sm text-gray-800">
-                <span>${goal.currentAmount}</span>
-                <span>${goal.targetAmount}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-sm text-gray-800">
-                  {getTimeRemaining(goal.deadline)}
-                </p>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(goal.status)} text-white`}>
-                  {goal.status}
-                </span>
-              </div>
-              <div className="flex justify-between mt-4">
-                <button
-                  onClick={() => {
-                    setSelectedGoal(goal);
-                    setShowProgressChart(true);
-                  }}
-                  className="text-blue-600 hover:text-blue-800 text-sm"
-                >
-                  View Progress
-                </button>
-                <div className="space-x-2">
-                  <button
-                    onClick={() => {
-                      setEditingGoal(goal);
-                      setShowEditModal(true);
-                    }}
-                    className="text-blue-600 hover:text-blue-800 text-sm"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleUpdateGoal(goal._id, { status: 'Completed' })}
-                    className="text-green-600 hover:text-green-800 text-sm"
-                  >
-                    Complete
-                  </button>
-                  <button
-                    onClick={() => handleDeleteGoal(goal._id)}
-                    className="text-red-600 hover:text-red-800 text-sm"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
+            </div>
+
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-2xl font-bold text-gray-900">${goal.currentAmount}</span>
+              <span className="text-gray-500">of</span>
+              <span className="text-2xl font-bold text-gray-900">${goal.targetAmount}</span>
+            </div>
+
+            <div className="text-gray-600 mb-6">
+              {Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24))} days remaining
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedGoal(goal)}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
+              >
+                View Progress
+              </button>
+              <button
+                onClick={() => {
+                  setEditingGoal(goal);
+                  setShowEditModal(true);
+                }}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleUpdateGoal(goal._id, { status: 'Completed' })}
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200"
+              >
+                Complete
+              </button>
+              <button
+                onClick={() => handleDeleteGoal(goal._id)}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}
       </div>
+      
+      {/* Add Goal Button */}
+      <button
+        onClick={() => setIsFormVisible(true)}
+        className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition-colors duration-200"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+      </button>
 
       {showProgressChart && selectedGoal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
