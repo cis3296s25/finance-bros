@@ -31,7 +31,7 @@ function Goals() {
 
   const fetchGoals = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/goals');
+      const response = await axios.get('http://localhost:5555/api/goals');
       setGoals(response.data);
     } catch (error) {
       console.error('Error fetching goals:', error);
