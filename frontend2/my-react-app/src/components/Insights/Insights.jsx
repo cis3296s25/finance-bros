@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Bar, Pie, Line } from 'recharts';
-import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, LineChart, Line, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+
+const API_URL = 'http://localhost:5555';
 
 function Insights() {
-  const [Transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [timeRange, setTimeRange] = useState('month');
   const [loading, setLoading] = useState(true);
   const [insights, setInsights] = useState({
@@ -17,13 +18,24 @@ function Insights() {
     monthlyComparison: []
   });
 
+  const COLORS = [
+    '#0088FE',
+    '#00C49F',
+    '#FFBB28',
+    '#FF8042',
+    '#8884D8',
+    '#82CA9D',
+    '#FFC658',
+    '#FF6B6B'
+  ];
+
   useEffect(() => {
     fetchTransactions();
   }, [timeRange]);
 
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get('http://localhost:5555');
+      const response = await axios.get(`${API_URL}/transactions`);
       setTransactions(response.data);
       calculateInsights(response.data);
       setLoading(false);
@@ -59,14 +71,14 @@ function Insights() {
     
     const totalExpenses = filteredData
       .filter(t => t.type === 'Expense')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
     // Calculate category breakdown
     const categoryExpenses = {};
     filteredData
       .filter(t => t.type === 'Expense')
       .forEach(t => {
-        categoryExpenses[t.category] = (categoryExpenses[t.category] || 0) + t.amount;
+        categoryExpenses[t.category] = (categoryExpenses[t.category] || 0) + Math.abs(t.amount);
       });
 
     const categoryBreakdown = Object.entries(categoryExpenses)
@@ -76,16 +88,16 @@ function Insights() {
       }))
       .sort((a, b) => b.value - a.value);
 
-    // Calculate spending trend
-    const spendingTrend = filteredData
+    // Calculate spending trend (daily)
+    const spendingByDate = {};
+    filteredData
       .filter(t => t.type === 'Expense')
-      .reduce((acc, t) => {
+      .forEach(t => {
         const date = new Date(t.date).toLocaleDateString();
-        acc[date] = (acc[date] || 0) + t.amount;
-        return acc;
-      }, {});
+        spendingByDate[date] = (spendingByDate[date] || 0) + Math.abs(t.amount);
+      });
 
-    const spendingTrendData = Object.entries(spendingTrend)
+    const spendingTrend = Object.entries(spendingByDate)
       .map(([date, amount]) => ({
         date,
         amount
@@ -93,18 +105,25 @@ function Insights() {
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     // Calculate monthly comparison
-    const monthlyComparison = filteredData
-      .filter(t => t.type === 'Expense')
-      .reduce((acc, t) => {
-        const month = new Date(t.date).toLocaleString('default', { month: 'short' });
-        acc[month] = (acc[month] || 0) + t.amount;
-        return acc;
-      }, {});
+    const monthlyData = {};
+    filteredData.forEach(t => {
+      const month = new Date(t.date).toLocaleString('default', { month: 'short' });
+      if (!monthlyData[month]) {
+        monthlyData[month] = { income: 0, expenses: 0 };
+      }
+      if (t.type === 'Income') {
+        monthlyData[month].income += t.amount;
+      } else {
+        monthlyData[month].expenses += Math.abs(t.amount);
+      }
+    });
 
-    const monthlyComparisonData = Object.entries(monthlyComparison)
-      .map(([month, amount]) => ({
+    const monthlyComparison = Object.entries(monthlyData)
+      .map(([month, data]) => ({
         month,
-        amount
+        income: data.income,
+        expenses: data.expenses,
+        savings: data.income - data.expenses
       }))
       .sort((a, b) => {
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -116,9 +135,9 @@ function Insights() {
       totalExpenses,
       netSavings: totalIncome - totalExpenses,
       topCategories: categoryBreakdown.slice(0, 5),
-      spendingTrend: spendingTrendData,
+      spendingTrend,
       categoryBreakdown,
-      monthlyComparison: monthlyComparisonData
+      monthlyComparison
     });
   };
 
@@ -146,7 +165,7 @@ function Insights() {
         <select
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
-          className="p-2 border rounded-md text-gray-800"
+          className="p-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="week">Last 7 Days</option>
           <option value="month">Last 30 Days</option>
@@ -156,15 +175,15 @@ function Insights() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-white p-6 rounded-xl shadow-lg">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Total Income</h3>
           <p className="text-2xl font-bold text-green-600">{formatCurrency(insights.totalIncome)}</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-white p-6 rounded-xl shadow-lg">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Total Expenses</h3>
           <p className="text-2xl font-bold text-red-600">{formatCurrency(insights.totalExpenses)}</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-white p-6 rounded-xl shadow-lg">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Net Savings</h3>
           <p className={`text-2xl font-bold ${insights.netSavings >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {formatCurrency(insights.netSavings)}
@@ -175,28 +194,28 @@ function Insights() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Spending Trend */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Spending Trend</h3>
+        <div className="bg-white p-6 rounded-xl shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Daily Spending Trend</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <Line data={insights.spendingTrend}>
+              <LineChart data={insights.spendingTrend}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip formatter={(value) => formatCurrency(value)} />
                 <Legend />
                 <Line type="monotone" dataKey="amount" stroke="#EF4444" name="Spending" />
-              </Line>
+              </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Category Breakdown */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Category Breakdown</h3>
+        <div className="bg-white p-6 rounded-xl shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Expense Categories</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <Pie>
+              <PieChart>
                 <Pie
                   data={insights.categoryBreakdown}
                   dataKey="value"
@@ -204,29 +223,35 @@ function Insights() {
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
-                  fill="#8884d8"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                />
+                  label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                >
+                  {insights.categoryBreakdown.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
                 <Tooltip formatter={(value) => formatCurrency(value)} />
-              </Pie>
+                <Legend />
+              </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
       {/* Monthly Comparison */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Monthly Spending Comparison</h3>
+      <div className="bg-white p-6 rounded-xl shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Monthly Overview</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
-            <Bar data={insights.monthlyComparison}>
+            <BarChart data={insights.monthlyComparison}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
               <Tooltip formatter={(value) => formatCurrency(value)} />
               <Legend />
-              <Bar dataKey="amount" fill="#3B82F6" name="Monthly Spending" />
-            </Bar>
+              <Bar dataKey="income" name="Income" fill="#10B981" />
+              <Bar dataKey="expenses" name="Expenses" fill="#EF4444" />
+              <Bar dataKey="savings" name="Savings" fill="#3B82F6" />
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
@@ -236,7 +261,7 @@ function Insights() {
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Top Spending Categories</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {insights.topCategories.map((category, index) => (
-            <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+            <div key={index} className="bg-white p-4 rounded-xl shadow-lg">
               <div className="flex justify-between items-center">
                 <span className="text-gray-800 font-medium">{category.name}</span>
                 <span className="text-red-600 font-bold">{formatCurrency(category.value)}</span>

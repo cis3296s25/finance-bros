@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const goalSchema = new mongoose.Schema({
   title: {
@@ -15,7 +15,6 @@ const goalSchema = new mongoose.Schema({
   },
   currentAmount: {
     type: Number,
-    required: true,
     default: 0,
   },
   deadline: {
@@ -29,7 +28,7 @@ const goalSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['In Progress', 'Completed', 'On Hold'],
+    enum: ['In Progress', 'Completed', 'Failed'],
     default: 'In Progress',
   },
   progressHistory: [{
@@ -86,5 +85,4 @@ goalSchema.pre('save', function(next) {
   next();
 });
 
-
-module.exports = mongoose.model('Goal', goalSchema); 
+export default mongoose.model('Goal', goalSchema); 

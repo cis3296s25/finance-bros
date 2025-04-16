@@ -3,7 +3,7 @@ import Budgeting from '../models/budgeting.js';
 // Get all budgeting items
 export const getBudgetingItems = async (req, res) => {
   try {
-    const budgetingItems = await Budgeting.find();
+    const budgetingItems = await Budgeting.find({ userId: '1' });
     res.status(200).json(budgetingItems);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch budgeting items' });
@@ -13,14 +13,23 @@ export const getBudgetingItems = async (req, res) => {
 // Add a new budgeting item
 export const addBudgetingItem = async (req, res) => {
   try {
-    const { name, budget } = req.body;
+    const { category, amount, notes, userId, period, startDate } = req.body;
 
     // Validate input
-    if (!name || budget === undefined) {
-      return res.status(400).json({ error: 'Name and budget are required' });
+    if (!category || amount === undefined || !userId) {
+      return res.status(400).json({ error: 'Category, amount, and userId are required' });
     }
 
-    const newBudgetingItem = new Budgeting({ name, budget, spent: 0 });
+    const newBudgetingItem = new Budgeting({
+      category,
+      amount,
+      notes,
+      userId,
+      period,
+      startDate,
+      spent: 0
+    });
+    
     const savedBudgetingItem = await newBudgetingItem.save();
     res.status(201).json(savedBudgetingItem);
   } catch (error) {
@@ -32,12 +41,12 @@ export const addBudgetingItem = async (req, res) => {
 export const updateBudgetingItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, budget } = req.body;
+    const { category, amount, notes } = req.body;
 
     const updatedBudgetingItem = await Budgeting.findByIdAndUpdate(
       id,
-      { name, budget },
-      { new: true } // Return the updated document
+      { category, amount, notes },
+      { new: true }
     );
 
     if (!updatedBudgetingItem) {
