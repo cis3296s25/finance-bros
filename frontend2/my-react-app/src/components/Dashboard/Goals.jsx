@@ -160,7 +160,7 @@ function Goals() {
   };
 
   return (
-    <div className="page-container p-6">
+    <div className="page-container p-4">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-gray-800">Financial Goals</h1>
         <button
@@ -172,7 +172,7 @@ function Goals() {
       </div>
       
       {isFormVisible && (
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div className="bg-white text-gray-900 rounded-xl shadow-lg p-6 mb-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -182,7 +182,7 @@ function Goals() {
                   name="title"
                   value={newGoal.title}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border  border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
               </div>
@@ -285,7 +285,6 @@ function Goals() {
         </div>
       )}
 
-      <h1 className="text-4xl font-bold text-gray-800 mb-8">Financial Goals</h1>
 
       <div className="flex gap-4 mb-8">
         <select

@@ -31,7 +31,7 @@ const PREDEFINED_CATEGORIES = [
 ];
 
 export default function BudgetingTab() {
-  const { user } = useUser();
+  useUser();
   const [budgets, setBudgets] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -112,7 +112,7 @@ export default function BudgetingTab() {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-4 md:space-y-6 bg-white rounded-2xl shadow-md">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 text-gray-900 bg-white rounded-2xl shadow-md">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Budget Overview</h1>
         <button

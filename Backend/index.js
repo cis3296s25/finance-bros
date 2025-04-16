@@ -1,6 +1,6 @@
 import express from 'express';
-import { PORT, mongoDBURL } from './config.js';
 import mongoose from 'mongoose';
+import { PORT, mongoDBURL } from './config.js';
 import budgetingRoutes from './routes/Budgeting.js'; // Import Budgeting routes
 import transactionRoutes from './routes/Transaction.js';
 import goalRoutes from './routes/Goal.js';
@@ -17,9 +17,10 @@ app.use(cors({
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 
-app.get('/', (request, response) => {
-  console.log(request);
-  return response.status(234).send('welcome to the homepage');
+app.use(cors()); // Enable CORS for all routes
+// Default Route
+app.get('/', (req, res) => {
+  res.status(200).send('Welcome to the Finance Bros API');
 });
 
 // Budgeting Routes
@@ -32,7 +33,7 @@ app.use('/transactions', transactionRoutes);
 app.use('/goals', goalRoutes);
 
 mongoose
-  .connect(mongoDBURL)
+  .connect(mongoDBURL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to the database');
     app.listen(PORT, () => {
@@ -40,8 +41,7 @@ mongoose
     });
   })
   .catch((error) => {
-    console.log('Error connecting to the database');
-    console.error(error);
+    console.error('Error connecting to the database:', error);
   });
 
 

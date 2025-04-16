@@ -5,7 +5,7 @@ import { BarChart, Bar, PieChart, Pie, LineChart, Line, Cell, ResponsiveContaine
 const API_URL = 'http://localhost:5555';
 
 function Insights() {
-  const [transactions, setTransactions] = useState([]);
+  // Removed unused transactions state
   const [timeRange, setTimeRange] = useState('month');
   const [loading, setLoading] = useState(true);
   const [insights, setInsights] = useState({
@@ -36,7 +36,7 @@ function Insights() {
   const fetchTransactions = async () => {
     try {
       const response = await axios.get(`${API_URL}/transactions`);
-      setTransactions(response.data);
+      // Removed setTransactions as transactions state is no longer used
       calculateInsights(response.data);
       setLoading(false);
     } catch (error) {
