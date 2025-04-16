@@ -31,7 +31,7 @@ const PREDEFINED_CATEGORIES = [
 ];
 
 export default function BudgetingTab() {
-  const { user } = useUser();
+  useUser();
   const [budgets, setBudgets] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);

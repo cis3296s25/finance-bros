@@ -2,7 +2,7 @@ import { useState } from 'react';
 import FinancialOverview from './FinancialOverview';
 import IncomeExpensesChart from './IncomeExpensesChart';
 import RecentTransactions from './RecentTransactions';
-import All_insights from './All_insights';
+/*import All_insights from './All_insights';*/
 import BudgetingTab from './BudgetingTab';
 
 function Dashboard() {
@@ -27,19 +27,19 @@ function Dashboard() {
       </nav>
 
       {/* Content */}
-      <main className="w-full flex-grow px-4 py-6 sm:px-6 lg:px-8">
+      <main className="w-full px-4 py-6 sm:px-6 lg:px-8 flex justify-center">
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="w-full max-w-4xl space-y-6">
             {/* Chart and Transactions */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="space-y-6">
               <IncomeExpensesChart />
               <RecentTransactions />
             </div>
 
             {/* Insights */}
-            <div className="lg:col-span-1">
+            {/* <div className="lg:col-span-1">
               <All_insights />
-            </div>
+            </div> */}
           </div>
         )}
       </main>

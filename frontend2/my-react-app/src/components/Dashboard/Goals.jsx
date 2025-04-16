@@ -160,7 +160,7 @@ function Goals() {
   };
 
   return (
-    <div className="page-container p-6">
+    <div className="page-container p-4">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-gray-800">Financial Goals</h1>
         <button
@@ -285,7 +285,6 @@ function Goals() {
         </div>
       )}
 
-      <h1 className="text-4xl font-bold text-gray-800 mb-8">Financial Goals</h1>
 
       <div className="flex gap-4 mb-8">
         <select
