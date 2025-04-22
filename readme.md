@@ -33,9 +33,22 @@ Finance Bros is a full-stack personal finance management application designed to
    cd Backend
 
 
-npm run start- all ``` run backend and frontend together 
+## Usage
 
-Acknowledgments 
+1. Open the frontend in your browser at `http://localhost:5173`.
+2. Sign in or sign up using Clerk authentication.
+3. Explore the dashboard, manage transactions, set goals, and interact with the chatbot.
+
+## Troubleshooting
+
+- **Issue**: Backend server fails to connect to MongoDB.
+  - **Solution**: Ensure your `MONGO_URI` in the `.env` file is correct and MongoDB is running.
+- **Issue**: Frontend fails to load.
+  - **Solution**: Verify that the backend server is running and the `VITE_OPENAI_API_KEY` is correctly set in the `.env` file.
+
+npm run start-all ``` run backend and frontend together 
+
+## Acknowledgments 
 
 OpenAI for the GPT-3.5-turbo model.
 Clerk for authentication.
