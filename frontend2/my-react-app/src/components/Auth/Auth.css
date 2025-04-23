@@ -1,6 +1,66 @@
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 60px); /* Subtract the height of the banner (e.g., 60px) */
+  background: linear-gradient(135deg, #4a90e2, #9013fe);
+  padding: 20px;
+}
+
+.auth-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  max-width: 400px;
+  text-align: center;
+}
+
 .welcome-text {
-  color: #ffffff; /* Change this to your desired color */
-  font-size: 2rem; /* Optional: Adjust font size */
-  font-weight: bold; /* Optional: Make the text bold */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Optional: Add a shadow for better visibility */
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+.auth-subtext {
+  font-size: 1rem;
+  color: #666666;
+  margin-bottom: 30px;
+}
+
+.auth-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.auth-button {
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  color: #ffffff; /* Ensure the font color is white */
+}
+
+.auth-button.sign-up {
+  background-color: #4caf50; /* Green for Sign Up */
+}
+
+.auth-button.sign-up:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.auth-button.sign-in {
+  background-color: #2196f3; /* Blue for Sign In */
+}
+
+.auth-button.sign-in:hover {
+  background-color: #1e88e5;
+  transform: scale(1.05);
 }

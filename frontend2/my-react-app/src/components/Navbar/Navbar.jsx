@@ -57,6 +57,15 @@ function Navbar() {
             >
               Budgets
             </Link>
+            <Link
+              to="/ask-ai"
+              className={`${
+                location.pathname === '/ask-ai' ? 'text-blue-300' : 'hover:text-gray-300'
+              } font-medium`}
+            >
+              Ask AI
+            </Link>
+
           </div>
         </div>
 

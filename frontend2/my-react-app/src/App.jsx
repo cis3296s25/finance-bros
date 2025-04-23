@@ -5,6 +5,7 @@ import Transactions from './components/Transactions';
 import Insights from './components/Insights';
 import Auth from './components/Auth';
 import BudgetingTab from './components/Dashboard/BudgetingTab';
+import AskAI from './components/AI/AskAI';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path="/goals" element={<Goals />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/budgets" element={<BudgetingTab />} /> {/* New Budgets Page */}
+            <Route path="/ask-ai" element={<AskAI />} />
 
           </Routes>
         </div>
@@ -32,3 +34,8 @@ function App() {
 }
 
 export default App;
+
+
+
+
+

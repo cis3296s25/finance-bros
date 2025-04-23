@@ -5,15 +5,24 @@ import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/clerk-re
 
 function Auth() {
   return (
-    <div className="sign-in-container">
-      <SignedOut>
-        <h1 className="welcome-text">Welcome to Your Own Personal Finance Tracker!</h1>
-        <SignUpButton mode="modal" />
-        <SignInButton mode="modal" />
-      </SignedOut>
-      <SignedIn>
-        <Navigate to="/" />
-      </SignedIn>
+    <div className="auth-page">
+      <div className="auth-card">
+        <SignedOut>
+          <h1 className="welcome-text">Welcome to Your Personal Finance Tracker</h1>
+          <p className="auth-subtext">Track your finances, set goals, and gain insights effortlessly.</p>
+          <div className="auth-buttons">
+            <SignUpButton mode="modal">
+              <button className="auth-button sign-up">Sign Up</button>
+            </SignUpButton>
+            <SignInButton mode="modal">
+              <button className="auth-button sign-in">Sign In</button>
+            </SignInButton>
+          </div>
+        </SignedOut>
+        <SignedIn>
+          <Navigate to="/" />
+        </SignedIn>
+      </div>
     </div>
   );
 }

@@ -4,6 +4,9 @@ import { PORT, mongoDBURL } from './config.js';
 import budgetingRoutes from './routes/Budgeting.js'; // Import Budgeting routes
 import transactionRoutes from './routes/Transaction.js';
 import goalRoutes from './routes/Goal.js';
+// import aiRoutes from './routes/ai.js';
+import { aiRoutes } from './routes/ai.js';
+
 import cors from 'cors';
 
 const app = express();
@@ -17,7 +20,11 @@ app.use(cors({
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 
-app.use(cors()); // Enable CORS for all routes
+
+// took this out because it was causing issues with the frontend
+// app.use(cors()); // Enable CORS for all routes
+
+
 // Default Route
 app.get('/', (req, res) => {
   res.status(200).send('Welcome to the Finance Bros API');
@@ -31,6 +38,9 @@ app.use('/transactions', transactionRoutes);
 
 // Goal Routes
 app.use('/goals', goalRoutes);
+
+// AI Chat Route
+app.use('/api/ai', aiRoutes); // 👈 add this line here
 
 mongoose
   .connect(mongoDBURL, { useNewUrlParser: true, useUnifiedTopology: true })
